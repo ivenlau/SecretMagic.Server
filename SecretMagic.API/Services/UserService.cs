@@ -43,14 +43,12 @@ namespace SecretMagic.API.Services
             }
             try
             {
-                var sha = new SHA256Managed();
-                var encryptedPass = sha.ComputeHash(Encoding.ASCII.GetBytes(userInfo.Password));
-                sha.Clear();
+                var encryptedPass = MD5Encoding(userInfo.Password);
                 var user = await this.userRepository.Create(new User
                 {
                     Name = userInfo.Name,
                     Email = userInfo.Email,
-                    Password = Encoding.ASCII.GetString(encryptedPass)
+                    Password = encryptedPass
                 });
                 await this.urmRepository.Create(new UserRoleMapping
                 {
@@ -165,6 +163,19 @@ namespace SecretMagic.API.Services
             {
                 throw new InternalException("DB error occurred when updating a user.");
             }
+        }
+
+        private static string MD5Encoding(string rawPass)
+        {
+            MD5 md5 = MD5.Create();
+            byte[] bs = Encoding.UTF8.GetBytes(rawPass);
+            byte[] hs = md5.ComputeHash(bs);
+            StringBuilder stb = new StringBuilder();
+            foreach (byte b in hs)
+            {
+                stb.Append(b.ToString("x2"));
+            }
+            return stb.ToString();
         }
     }
 }

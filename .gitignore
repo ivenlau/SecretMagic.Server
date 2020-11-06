@@ -312,3 +312,4 @@ typings/
 sh/
 # ignore test sdk.config.json
 sdk.config.json
+published/

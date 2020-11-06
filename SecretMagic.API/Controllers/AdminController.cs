@@ -32,8 +32,8 @@ namespace SecretMagic.API.Controllers
                 var userId = Guid.NewGuid();
                 var roleId = Guid.NewGuid();
                 var resourceId = Guid.NewGuid();
-
-                context.Users.Add(new User { Id = userId, Name = "Admin", Password="????n????:b??????]Z?????:?l?" });
+                // Default password is 123456
+                context.Users.Add(new User { Id = userId, Name = "Admin", Password="e10adc3949ba59abbe56e057f20f883e" });
                 context.Roles.Add(new Role { Id = roleId, Name = "SuperAdmin" });
                 context.URM.Add(new UserRoleMapping { UserId = userId, RoleId = roleId });
                 context.Resources.Add(new Resource{ Name = "User Management" });

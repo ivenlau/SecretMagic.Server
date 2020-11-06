@@ -41,10 +41,8 @@ namespace SecretMagic.API.Services
         public async Task<LoginResult> Login(string userName, string password)
         {
             LoginResult result = null;
-            var sha = new SHA256Managed();
-            var encryptedPass = sha.ComputeHash(Encoding.ASCII.GetBytes(password));
-            sha.Clear();
-            var user = await userRepository.ValidateUser(userName, Encoding.ASCII.GetString(encryptedPass));
+            var encryptedPass = MD5Encoding(password);
+            var user = await userRepository.ValidateUser(userName, encryptedPass);
             if(user == null)
             {
                 throw new BadRequestException("Invalid credential!");
@@ -85,6 +83,19 @@ namespace SecretMagic.API.Services
             result.Resource = resourceNames.ToArray();
 
             return result;
+        }
+
+        private static string MD5Encoding(string rawPass)
+        {
+            MD5 md5 = MD5.Create();
+            byte[] bs = Encoding.UTF8.GetBytes(rawPass);
+            byte[] hs = md5.ComputeHash(bs);
+            StringBuilder stb = new StringBuilder();
+            foreach (byte b in hs)
+            {
+                stb.Append(b.ToString("x2"));
+            }
+            return stb.ToString();
         }
     }
 }
